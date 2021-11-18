@@ -2,6 +2,7 @@ package org.easydarwin.easypusher.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 
@@ -17,6 +18,8 @@ import java.util.regex.Pattern;
  * @UpdateDate: 2020/4/26 11:53
  */
 public class PublicUtil {
+
+    private static MediaScannerConnection mMediaScanner;
 
     public static boolean isIP(String addr) {
         if (addr.length() < 7 || addr.length() > 15 || "".equals(addr)) {
@@ -60,14 +63,16 @@ public class PublicUtil {
 
     /**
      * 系统10.0以上
+     *
      * @return
      */
-    public static  boolean isMoreThanTheAndroid10(){
-      return   Build.VERSION.SDK_INT>28;
+    public static boolean isMoreThanTheAndroid10() {
+        return Build.VERSION.SDK_INT > 28;
     }
 
     /**
      * 通知系统相册更新图库
+     *
      * @param context
      * @param imagePath
      */
@@ -84,4 +89,52 @@ public class PublicUtil {
             }
         }
     }
+
+    /**
+     * 刷新图库
+     * @param mContext
+     * @param fileAbsolutePath
+     * @param isVideo
+     */
+    public static void refreshAlbum(Context mContext,String fileAbsolutePath, boolean isVideo) {
+
+        mMediaScanner = new MediaScannerConnection(mContext, new MediaScannerConnection.MediaScannerConnectionClient() {
+
+            @Override
+
+            public void onMediaScannerConnected() {
+
+                if (mMediaScanner.isConnected()) {
+
+
+                    if (isVideo) {
+
+                        mMediaScanner.scanFile(fileAbsolutePath, "video/mp4");
+
+                    } else {
+
+                        mMediaScanner.scanFile(fileAbsolutePath, "image/jpeg");
+
+                    }
+
+                } else {
+
+
+                }
+
+            }
+
+            @Override
+
+            public void onScanCompleted(String path, Uri uri) {
+
+
+            }
+
+        });
+
+        mMediaScanner.connect();
+
+    }
+
 }

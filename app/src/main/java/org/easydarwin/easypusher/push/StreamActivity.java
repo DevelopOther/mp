@@ -757,7 +757,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
                 ImageView ib = findViewById(R.id.streaming_activity_record);
                 ib.setImageResource(R.drawable.record);
-                PublicUtil.sendBroadcastToAlbum(mContext,Config.recordPath());
+                PublicUtil.refreshAlbum(mContext,Config.recordPath(),true);
             }
         });
     }

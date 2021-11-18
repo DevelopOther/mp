@@ -213,8 +213,7 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
 
                                                     mSubFiles = subFiles;
                                                     notifyDataSetChanged();
-                                                    PublicUtil.sendBroadcastToAlbum(getContext(),
-                                                           f.getAbsolutePath());
+                                                    PublicUtil.refreshAlbum(getContext(),Config.recordPath(),true);
                                                     ToastUtils.toast(getContext(), "已删除");
                                                 }
                                             }
