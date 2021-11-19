@@ -182,7 +182,7 @@ public class UVCCameraService extends Service {
                         liveData.postValue(null);
                     }
 
-                    cameras.remove(device.getDeviceId());
+//                    cameras.remove(device.getDeviceId());
                 } else {
                     Toast.makeText(UVCCameraService.this, "UVCCamera disconnected!", Toast.LENGTH_SHORT).show();
                     mUVCCamera = null;

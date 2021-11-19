@@ -134,6 +134,8 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                     break;
                 case UVC_DISCONNECT:
                     stopAllPushStream();
+                    sendMsg("请重新插入眼镜摄像机");
+
 
                     //                    initSurfaceViewLayout(0);
                     //                    int position = SPUtil.getScreenPushingCameraIndex(StreamActivity.this);
@@ -409,7 +411,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     private void stopPushStream(int position) {
         if (mMediaStream != null) {
             mMediaStream.stopPusherStream(position);
-            sendMessage("断开连接");
+            sendMsg("断开连接");
         }
     }
 
@@ -427,7 +429,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                 //                txtStreamAddress.setText(url);
             } catch (IOException e) {
                 e.printStackTrace();
-                sendMessage("参数初始化失败");
+                sendMsg("参数初始化失败");
             }
         }
     }
@@ -800,40 +802,40 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     public void onPushCallback(final PushCallback cb) {
         switch (cb.code) {
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_ACTIVATE_INVALID_KEY:
-                sendMessage("无效Key");
+                sendMsg("无效Key");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_ACTIVATE_SUCCESS:
-                sendMessage("激活成功");
+                sendMsg("激活成功");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_RTMP_STATE_CONNECTING:
-                sendMessage("连接中");
+                sendMsg("连接中");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_RTMP_STATE_CONNECTED:
-                sendMessage("连接成功");
+                sendMsg("连接成功");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_RTMP_STATE_CONNECT_FAILED:
-                sendMessage("连接失败");
+                sendMsg("连接失败");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_RTMP_STATE_CONNECT_ABORT:
-                sendMessage("连接异常中断");
+                sendMsg("连接异常中断");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_RTMP_STATE_PUSHING:
-                sendMessage("直播中");
+                sendMsg("直播中");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_RTMP_STATE_DISCONNECTED:
-                sendMessage("断开连接");
+                sendMsg("断开连接");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_ACTIVATE_PLATFORM_ERR:
-                sendMessage("平台不匹配");
+                sendMsg("平台不匹配");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_ACTIVATE_COMPANY_ID_LEN_ERR:
-                sendMessage("断授权使用商不匹配");
+                sendMsg("断授权使用商不匹配");
                 break;
             case EasyRTMP.OnInitPusherCallback.CODE.EASY_ACTIVATE_PROCESS_NAME_LEN_ERR:
-                sendMessage("进程名称长度不匹配");
+                sendMsg("进程名称长度不匹配");
                 break;
             case EASY_ACTIVATE_VALIDITY_PERIOD_ERR:
-                sendMessage("进程名称长度不匹配");
+                sendMsg("进程名称长度不匹配");
                 break;
         }
     }
@@ -855,7 +857,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     /*
      * 显示推流的状态
      * */
-    private void sendMessage(String message) {
+    private void sendMsg(String message) {
         Message msg = Message.obtain();
         msg.what = MSG_STATE;
         Bundle bundle = new Bundle();
@@ -1275,6 +1277,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     @Override
     public void onUvcCameraConnected() {
         Log.e(TAG, "onUvcCameraConnected  otg摄像头连接");
+        sendMsg("眼镜摄像机已连接");
         stopAllPushStream();
         if (mMediaStream != null) {
             mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK_UVC);
@@ -1314,7 +1317,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     public void onUvcCameraDisConnected() {
         //        Toast.makeText(getApplicationContext(),"disconnect",Toast.LENGTH_SHORT).show();
         handler.sendEmptyMessage(UVC_DISCONNECT);
-        sendMessage("请重新插入眼镜摄像机");
+
     }
 
     @Override
