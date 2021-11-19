@@ -163,7 +163,7 @@ public class EasyMuxer {
                     }
 
                     mAudioTrackIndex = mVideoTrackIndex = -1;
-                    BUSUtil.BUS.post(new StopRecord());
+                    BUSUtil.BUS.post(new StopRecord(mFilePath + "-" + index + ".mp4"));
                 }
             }
         }

@@ -42,7 +42,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.juntai.wisdom.basecomponent.utils.PubUtil;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.orhanobut.hawk.Hawk;
 import com.squareup.otto.Subscribe;
@@ -757,7 +756,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
                 ImageView ib = findViewById(R.id.streaming_activity_record);
                 ib.setImageResource(R.drawable.record);
-                PublicUtil.refreshAlbum(mContext,Config.recordPath(),true);
+                PublicUtil.saveVideo(mContext,new File(sr.getVideoPath()));
             }
         });
     }
