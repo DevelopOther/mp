@@ -7,4 +7,17 @@ package org.easydarwin.bus;
  */
 public class StopRecord {
 
+    public StopRecord(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
+    private  String  videoPath;
+
+    public String getVideoPath() {
+        return videoPath == null ? "" : videoPath;
+    }
+
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath == null ? "" : videoPath;
+    }
 }
