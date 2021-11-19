@@ -725,11 +725,11 @@ public class MediaStream {
                 return;
             Log.e(TAG, "switchCameraTask  start  摄像头id "+mCameraId);
             try {
-                if (mCameraId == CAMERA_FACING_BACK_UVC) {
-                    if (uvcCamera != null) {
-                        return;
-                    }
-                }
+//                if (mCameraId == CAMERA_FACING_BACK_UVC) {
+//                    if (uvcCamera != null) {
+//                        return;
+//                    }
+//                }
 
                 stopPreview();
                 destroyCamera();

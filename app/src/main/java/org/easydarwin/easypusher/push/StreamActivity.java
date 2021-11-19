@@ -135,28 +135,28 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                     break;
                 case UVC_DISCONNECT:
                     stopAllPushStream();
-                    initSurfaceViewLayout(0);
-                    int position = SPUtil.getScreenPushingCameraIndex(StreamActivity.this);
-                    if (2 == position) {
-                        position = 0;
-                        SPUtil.setScreenPushingCameraIndex(StreamActivity.this, position);
-                    }
-                    switch (position) {
-                        case 0:
-                            mSelectCameraTv.setText("摄像头:后置");
-                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK);
-                            break;
-                        case 1:
-                            mSelectCameraTv.setText("摄像头:前置");
-                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    String title = resDisplay[getIndex(resDisplay, Hawk.get(HawkProperty.KEY_NATIVE_HEIGHT,
-                            MediaStream.nativeHeight))].toString();
-                    mScreenResTv.setText(String.format("分辨率:%s", title));
+//                    initSurfaceViewLayout(0);
+//                    int position = SPUtil.getScreenPushingCameraIndex(StreamActivity.this);
+//                    if (2 == position) {
+//                        position = 0;
+//                        SPUtil.setScreenPushingCameraIndex(StreamActivity.this, position);
+//                    }
+//                    switch (position) {
+//                        case 0:
+//                            mSelectCameraTv.setText("摄像头:后置");
+//                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK);
+//                            break;
+//                        case 1:
+//                            mSelectCameraTv.setText("摄像头:前置");
+//                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//
+//                    String title = resDisplay[getIndex(resDisplay, Hawk.get(HawkProperty.KEY_NATIVE_HEIGHT,
+//                            MediaStream.nativeHeight))].toString();
+//                    mScreenResTv.setText(String.format("分辨率:%s", title));
                     break;
                 default:
                     break;
