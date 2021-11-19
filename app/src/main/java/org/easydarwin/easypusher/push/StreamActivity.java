@@ -134,28 +134,30 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                     break;
                 case UVC_DISCONNECT:
                     stopAllPushStream();
-//                    initSurfaceViewLayout(0);
-//                    int position = SPUtil.getScreenPushingCameraIndex(StreamActivity.this);
-//                    if (2 == position) {
-//                        position = 0;
-//                        SPUtil.setScreenPushingCameraIndex(StreamActivity.this, position);
-//                    }
-//                    switch (position) {
-//                        case 0:
-//                            mSelectCameraTv.setText("摄像头:后置");
-//                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK);
-//                            break;
-//                        case 1:
-//                            mSelectCameraTv.setText("摄像头:前置");
-//                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
-//                            break;
-//                        default:
-//                            break;
-//                    }
-//
-//                    String title = resDisplay[getIndex(resDisplay, Hawk.get(HawkProperty.KEY_NATIVE_HEIGHT,
-//                            MediaStream.nativeHeight))].toString();
-//                    mScreenResTv.setText(String.format("分辨率:%s", title));
+
+                    //                    initSurfaceViewLayout(0);
+                    //                    int position = SPUtil.getScreenPushingCameraIndex(StreamActivity.this);
+                    //                    if (2 == position) {
+                    //                        position = 0;
+                    //                        SPUtil.setScreenPushingCameraIndex(StreamActivity.this, position);
+                    //                    }
+                    //                    switch (position) {
+                    //                        case 0:
+                    //                            mSelectCameraTv.setText("摄像头:后置");
+                    //                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_BACK);
+                    //                            break;
+                    //                        case 1:
+                    //                            mSelectCameraTv.setText("摄像头:前置");
+                    //                            mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
+                    //                            break;
+                    //                        default:
+                    //                            break;
+                    //                    }
+                    //
+                    //                    String title = resDisplay[getIndex(resDisplay, Hawk.get(HawkProperty
+                    //                    .KEY_NATIVE_HEIGHT,
+                    //                            MediaStream.nativeHeight))].toString();
+                    //                    mScreenResTv.setText(String.format("分辨率:%s", title));
                     break;
                 default:
                     break;
@@ -280,17 +282,17 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
         initView();
         initSurfaceViewLayout(0);
         BUSUtil.BUS.register(this);
-//        RegOperateManager.getInstance(this).setCancelCallBack(new RegLatestContact.CancelCallBack() {
-//            @Override
-//            public void toFinishActivity() {
-//                finish();
-//            }
-//
-//            @Override
-//            public void toDoNext() {
-//
-//            }
-//        });
+        //        RegOperateManager.getInstance(this).setCancelCallBack(new RegLatestContact.CancelCallBack() {
+        //            @Override
+        //            public void toFinishActivity() {
+        //                finish();
+        //            }
+        //
+        //            @Override
+        //            public void toDoNext() {
+        //
+        //            }
+        //        });
 
 
     }
@@ -756,7 +758,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
                 ImageView ib = findViewById(R.id.streaming_activity_record);
                 ib.setImageResource(R.drawable.record);
-                PublicUtil.refreshGrally(mContext,sr.getVideoPath());
+                PublicUtil.refreshGrally(mContext, sr.getVideoPath());
             }
         });
     }
@@ -893,10 +895,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
         //与上次点击返回键时刻作差
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
             if (mMediaStream != null) {
-                if (mMediaStream.isRecording()) {
-                    mMediaStream.stopRecord();
-                    startRecordIv.setImageResource(R.drawable.record);
-                }
+                stopRecord();
             }
             //大于2000ms则认为是误操作，使用Toast进行提示
             Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
@@ -978,10 +977,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                             public void onClick(DialogInterface dialog, int which) {
                                 //停止本地推流和录像
                                 stopAllPushStream();
-                                if (mMediaStream.isRecording()) {
-                                    mMediaStream.stopRecord();
-                                    startRecordIv.setImageResource(R.drawable.record);
-                                }
+                                stopRecord();
                                 dialog.dismiss();
                                 Hawk.put(HawkProperty.HIDE_FLOAT_VIEWS, true);
                                 if (IS_VERTICAL_SCREEN) {
@@ -1004,10 +1000,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
                 //停止本地推流和录像
                 stopAllPushStream();
-                if (mMediaStream.isRecording()) {
-                    mMediaStream.stopRecord();
-                    startRecordIv.setImageResource(R.drawable.record);
-                }
+                stopRecord();
 
                 int orientation = getRequestedOrientation();
 
@@ -1030,10 +1023,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
                 if (mMediaStream != null) {
                     if (mMediaStream.isRecording()) {
-                        ToastUtils.toast(mContext, "已停止录像");
-
-                        mMediaStream.stopRecord();
-                        startRecordIv.setImageResource(R.drawable.record);
+                        stopRecord();
                     } else {
                         ToastUtils.toast(mContext, "正在开始录像");
                         mMediaStream.startRecord();
@@ -1047,6 +1037,27 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                 startActivityForResult(intent, 100);
                 overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
                 break;
+        }
+    }
+
+    private void stopRecord() {
+
+        if (mMediaStream.isRecording()) {
+            new AlertDialog.Builder(mContext)
+                    .setMessage("是否关闭录像?")
+                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mMediaStream.stopRecord();
+                            startRecordIv.setImageResource(R.drawable.record);
+                            ToastUtils.toast(mContext, "已停止录像");
+                        }
+                    }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
         }
     }
 
@@ -1303,7 +1314,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     public void onUvcCameraDisConnected() {
         //        Toast.makeText(getApplicationContext(),"disconnect",Toast.LENGTH_SHORT).show();
         handler.sendEmptyMessage(UVC_DISCONNECT);
-
+        sendMessage("请重新插入眼镜摄像机");
     }
 
     @Override

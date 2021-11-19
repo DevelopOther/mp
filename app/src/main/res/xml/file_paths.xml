@@ -5,6 +5,9 @@
     <root-path
         name="YJZB"
         path="一见多播" />
+    <root-path
+        name="root"
+        path="." />
     <files-path
         name="files"
         path="files" />

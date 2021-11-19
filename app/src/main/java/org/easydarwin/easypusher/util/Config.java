@@ -39,6 +39,7 @@ public class Config {
 
 
     public static String recordPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator + PubUtil.APP_NAME;
+//        return Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator + PubUtil.APP_NAME;
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
     }
 }
