@@ -1,5 +1,6 @@
 package org.easydarwin.easypusher;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,6 +8,7 @@ import android.content.res.AssetManager;
 import android.os.Build;
 
 import com.basenetlib.util.NetWorkUtil;
+import com.juntai.wisdom.basecomponent.app.BaseApplication;
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 import com.orhanobut.hawk.Hawk;
 import com.umeng.commonsdk.UMConfigure;
@@ -24,7 +26,7 @@ import io.reactivex.annotations.Beta;
 
 import static org.easydarwin.easyrtmp.push.EasyRTMP.getActiveDays;
 
-public class MyApp extends Application {
+public class MyApp extends BaseApplication {
 
     public static final String CHANNEL_CAMERA = "camera";
 
@@ -36,6 +38,16 @@ public class MyApp extends Application {
     }
 
     @Override
+    public void appBackground(boolean isBackground, Activity activity) {
+
+    }
+
+    @Override
+    public String getTinkerId() {
+        return null;
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
 
@@ -43,7 +55,7 @@ public class MyApp extends Application {
 //
 //        Bugly.init(getApplicationContext(), "9a829a728a", false);
 //        setBuglyInit();
-        Hawk.init(this).build();
+
         NetWorkUtil.initContext(this);
         File youyuan = getFileStreamPath("SIMYOU.ttf");
         if (!youyuan.exists()) {

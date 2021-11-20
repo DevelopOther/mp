@@ -6,6 +6,9 @@ import android.media.MediaMuxer;
 import android.os.Build;
 import android.util.Log;
 
+import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.orhanobut.hawk.Hawk;
+
 import org.easydarwin.bus.StartRecord;
 import org.easydarwin.bus.StopRecord;
 import org.easydarwin.util.BUSUtil;
@@ -26,7 +29,7 @@ public class EasyMuxer {
     private final String mFilePath;
 
     private MediaMuxer mMuxer;
-    private final long durationMillis;
+
 
     private int index = 0;
     private int mVideoTrackIndex = -1;
@@ -36,9 +39,8 @@ public class EasyMuxer {
     private MediaFormat mVideoFormat;
     private MediaFormat mAudioFormat;
 
-    public EasyMuxer(String path, long durationMillis) {
+    public EasyMuxer(String path) {
         mFilePath = path;
-        this.durationMillis = durationMillis;
 
         Object mux = null;
 
@@ -123,7 +125,8 @@ public class EasyMuxer {
         if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
             Log.i(TAG, "BUFFER_FLAG_END_OF_STREAM received");
         }
-
+        // 默认录像时间300000毫秒
+        long  durationMillis = Hawk.get(HawkProperty.RECORD_DURACTION,300000);
         if (System.currentTimeMillis() - mBeginMillis >= durationMillis) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 Log.i(TAG, String.format("record file reach expiration.create new file:" + index));

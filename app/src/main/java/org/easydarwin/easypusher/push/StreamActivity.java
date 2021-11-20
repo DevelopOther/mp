@@ -112,6 +112,8 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
     public static long mRecordingBegin;
     public static boolean mRecording;
+    //录像是否是开启状态  默认是false
+    public static boolean mRecordable = false;
 
     private long mExitTime;//声明一个long类型变量：用于存放上一点击“返回键”的时刻
     private final static int UVC_CONNECT = 111;
@@ -120,6 +122,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     public static boolean IS_VERTICAL_SCREEN = true;//是否是竖屏
 
     private boolean isBackPush = false;//后台录制
+
 
     Handler handler = new Handler() {
         @Override
@@ -134,6 +137,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                     break;
                 case UVC_DISCONNECT:
                     stopAllPushStream();
+                    stopRecord();
                     sendMsg("请重新插入眼镜摄像机");
 
 
@@ -897,7 +901,24 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
         //与上次点击返回键时刻作差
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
             if (mMediaStream != null) {
-                stopRecord();
+                if (mMediaStream.isRecording()) {
+                    new AlertDialog.Builder(mContext)
+                            .setMessage("是否关闭录像?")
+                            .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mRecordable = false;
+                                    stopRecord();
+                                }
+                            }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
+                    return;
+                }
+
             }
             //大于2000ms则认为是误操作，使用Toast进行提示
             Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
@@ -1021,15 +1042,24 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                             REQUEST_STORAGE_PERMISSION);
                     return;
                 }
-
-
                 if (mMediaStream != null) {
                     if (mMediaStream.isRecording()) {
-                        stopRecord();
+                            new AlertDialog.Builder(mContext)
+                                    .setMessage("是否关闭录像?")
+                                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mRecordable = false;
+                                            stopRecord();
+                                        }
+                                    }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            }).show();
                     } else {
-                        ToastUtils.toast(mContext, "正在开始录像");
-                        mMediaStream.startRecord();
-                        startRecordIv.setImageResource(R.drawable.record_pressed);
+                        startRecord();
                     }
                 }
                 break;
@@ -1042,25 +1072,19 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
         }
     }
 
+    private void startRecord() {
+        ToastUtils.toast(mContext, "正在开始录像");
+        mMediaStream.startRecord();
+        mRecordable = true;
+        startRecordIv.setImageResource(R.drawable.record_pressed);
+    }
+
     private void stopRecord() {
+        mMediaStream.stopRecord();
+        startRecordIv.setImageResource(R.drawable.record);
+        ToastUtils.toast(mContext, "已停止录像");
 
-        if (mMediaStream.isRecording()) {
-            new AlertDialog.Builder(mContext)
-                    .setMessage("是否关闭录像?")
-                    .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mMediaStream.stopRecord();
-                            startRecordIv.setImageResource(R.drawable.record);
-                            ToastUtils.toast(mContext, "已停止录像");
-                        }
-                    }).setNegativeButton("否", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
 
-                }
-            }).show();
-        }
     }
 
     /**
@@ -1291,7 +1315,9 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        if (mRecordable) {
+            startRecord();
+        }
         //        mScreenResTv.setVisibility(View.INVISIBLE);
         //        mSwitchOritation.setVisibility(View.INVISIBLE);
         //        String title = resUvcDisplay[Hawk.get(HawkProperty.KEY_SCREEN_PUSHING_UVC_RES_INDEX, 1)].toString();
@@ -1323,7 +1349,6 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         if (!isBackPush) {
-
             if (newConfig.orientation == newConfig.ORIENTATION_LANDSCAPE) {
                 //横屏
                 IS_VERTICAL_SCREEN = false;
@@ -1344,6 +1369,9 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                 } else {
                     initUvcLayout();
                 }
+            }
+            if (mRecordable) {
+                startRecord();
             }
         }
         super.onConfigurationChanged(newConfig);

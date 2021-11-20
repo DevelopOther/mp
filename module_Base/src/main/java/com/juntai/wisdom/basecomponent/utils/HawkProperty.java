@@ -8,6 +8,7 @@ package com.juntai.wisdom.basecomponent.utils;
 public class HawkProperty {
 
     public static String AUTO_RUN = "auto_run";//开机自启动
+    public static String RECORD_DURACTION = "record_duraction";//录像间隔
     public static String LOGIN_SUCCESS = "login";//登录成功
     public static String PLATFORMS = "platform";//live平台
     public static String HIDE_FLOAT_VIEWS = "hide_views";//隐藏悬浮控件

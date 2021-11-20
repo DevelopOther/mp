@@ -645,9 +645,9 @@ public class MediaStream {
             return;
         }
 
-        // 默认录像时间300000毫秒
+
         mMuxer =
-                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString(), 300000);
+                new EasyMuxer(new File(recordPath, new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date())).toString());
 
         mRecordVC = new RecordVideoConsumer(context, mHevc ? MediaFormat.MIMETYPE_VIDEO_HEVC : MediaFormat.MIMETYPE_VIDEO_AVC, mMuxer, SPUtil.getEnableVideoOverlay(context), SPUtil.getBitrateKbps(context), info.mName, info.mColorFormat);
         if (uvcCamera != null) {

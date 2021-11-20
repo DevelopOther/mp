@@ -14,6 +14,7 @@ import com.juntai.wisdom.basecomponent.BuildConfig;
 import com.juntai.wisdom.basecomponent.R;
 import com.juntai.wisdom.basecomponent.utils.LogUtil;
 import com.juntai.wisdom.basecomponent.utils.NavigationBarInfo;
+import com.orhanobut.hawk.Hawk;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
@@ -61,7 +62,7 @@ public abstract class BaseApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
-
+        Hawk.init(this).build();
         getScreen(this);
         if (BuildConfig.DEBUG) {
             //
