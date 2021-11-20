@@ -17,14 +17,17 @@ import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
@@ -64,6 +67,7 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
     public static final String LIVE_TYPE_CUSTOM = "ADDPLATE";
     private ActivitySettingBinding binding;
     private MyLivesAdapter adapter;
+    private AlertDialog alertDialog;
     ;
 
     @Override
@@ -93,6 +97,8 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
         binding.mainToolbar.setOnMenuItemClickListener(this);
         binding.openRecordLocalBt.setOnClickListener(this);
         binding.quitAppBt.setOnClickListener(this);
+        binding.recordDurationCl.setOnClickListener(this);
+        binding.recordDurationDesTv.setText(String.format("录像时间间隔为(%s分钟)",Hawk.get(HawkProperty.RECORD_DURACTION,5)));
         adapter = new MyLivesAdapter(R.layout.my_lives_item);
         GridLayoutManager manager = new GridLayoutManager(mContext, 3);
         binding.livePlatformRv.setAdapter(adapter);
@@ -394,32 +400,53 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
             case R.id.open_record_local_bt:
                 Intent intent = new Intent(this, MediaFilesActivity.class);
                 startActivityForResult(intent, 0);
-                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+//                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
                 break;
             case R.id.quit_app_bt:
                 View view = LayoutInflater.from(this).inflate(R.layout.quite_app, null);
                 view.findViewById(R.id.quit_app_tv).setOnClickListener(this);
                 view.findViewById(R.id.logout_app_tv).setOnClickListener(this);
-               AlertDialog alertDialog =  new AlertDialog.Builder(this).setCancelable(false)
+                AlertDialog alertDialog = new AlertDialog.Builder(this).setCancelable(false)
                         .setView(view)
                         .show();
                 view.findViewById(R.id.cancel_tv).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (alertDialog != null&&alertDialog.isShowing()) {
+                        if (alertDialog != null && alertDialog.isShowing()) {
                             alertDialog.dismiss();
                         }
 
                     }
                 });
                 break;
-            case  R.id.quit_app_tv:
+            case R.id.quit_app_tv:
                 ActivityManagerTool.getInstance().finishApp();
                 break;
-            case  R.id.logout_app_tv:
+            case R.id.logout_app_tv:
                 ActivityManagerTool.getInstance().finishApp();
                 Hawk.delete(HawkProperty.LOGIN_SUCCESS);
                 startActivity(new Intent(this, SplashActivity.class));
+                break;
+
+            case R.id.record_duration_cl:
+                View durationView = LayoutInflater.from(mContext).inflate(R.layout.record_duration, null);
+                EditText durationEt = durationView.findViewById(R.id.duration_et);
+                AlertDialog dialog = new AlertDialog.Builder(mContext).setView(durationView).show();
+                durationView.findViewById(R.id.confirm_tv).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String duration = durationEt.getText().toString().trim();
+                        if (!TextUtils.isEmpty(duration)) {
+                            Hawk.put(HawkProperty.RECORD_DURACTION, Integer.parseInt(duration));
+                        }
+                        binding.recordDurationDesTv.setText(String.format("录像时间间隔为(%s分钟)",duration));
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+
                 break;
             default:
                 break;

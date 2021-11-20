@@ -126,7 +126,7 @@ public class EasyMuxer {
             Log.i(TAG, "BUFFER_FLAG_END_OF_STREAM received");
         }
         // 默认录像时间300000毫秒
-        long  durationMillis = Hawk.get(HawkProperty.RECORD_DURACTION,300000);
+        long  durationMillis = Hawk.get(HawkProperty.RECORD_DURACTION,5) * 60 * 1000;
         if (System.currentTimeMillis() - mBeginMillis >= durationMillis) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 Log.i(TAG, String.format("record file reach expiration.create new file:" + index));
