@@ -30,7 +30,6 @@ public class SplashActivity extends BaseProjectActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_activity);
         boolean isLogin = Hawk.get(HawkProperty.LOGIN_SUCCESS, false);
         if (isLogin) {
             new Handler().postDelayed(new Runnable() {

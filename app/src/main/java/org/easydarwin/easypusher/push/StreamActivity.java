@@ -59,6 +59,7 @@ import org.easydarwin.easypusher.util.Config;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
 
+import org.easydarwin.easypusher.util.DoubleClickListener;
 import org.easydarwin.easypusher.util.PublicUtil;
 import org.easydarwin.easypusher.util.SPUtil;
 import org.easydarwin.easyrtmp.push.EasyRTMP;
@@ -607,16 +608,35 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
      */
     private void initSurfaceViewClick() {
         surfaceView.setSurfaceTextureListener(this);
-        surfaceView.setOnClickListener(new View.OnClickListener() {
+        surfaceView.setOnClickListener(new DoubleClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onDoubleClick(View v) {
                 if (Hawk.get(HawkProperty.HIDE_FLOAT_VIEWS, false)) {
-                    mFloatViewGp.setVisibility(View.VISIBLE);
-                    //                    //屏幕竖屏
-                    //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//                    mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
-                    Hawk.put(HawkProperty.HIDE_FLOAT_VIEWS, false);
+                    //隐藏状态
+                    new AlertDialog.Builder(mContext)
+                            .setMessage("确定需要退出吗？")
+                            .setCancelable(false)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Hawk.put(HawkProperty.HIDE_FLOAT_VIEWS, false);
+                                    mSwitchOritation.performClick();
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();
+
+
                 }
+            }
+
+            @Override
+            public void onOneClick(View v) {
+
             }
         });
     }
@@ -1358,6 +1378,15 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
             }
             if (Hawk.get(HawkProperty.HIDE_FLOAT_VIEWS, false)) {
                 mFloatViewGp.setVisibility(View.GONE);
+                new AlertDialog.Builder(mContext)
+                        .setCancelable(false)
+                        .setMessage("双击屏幕可退出录屏直播！")
+                        .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
             } else {
                 mFloatViewGp.setVisibility(View.VISIBLE);
             }
