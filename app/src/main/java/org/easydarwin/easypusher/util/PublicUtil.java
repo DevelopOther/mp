@@ -1,5 +1,6 @@
 package org.easydarwin.easypusher.util;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -74,25 +76,6 @@ public class PublicUtil {
         return Build.VERSION.SDK_INT > 28;
     }
 
-    /**
-     * 通知系统相册更新图库
-     *
-     * @param context
-     * @param imagePath
-     */
-    public static void sendBroadcastToAlbum(Context context, String imagePath) {
-        if (context != null && imagePath != null && imagePath.length() > 0) {
-            File imageFile = new File(imagePath);
-            if (imageFile.exists()) {
-                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                Uri uri = Uri.fromFile(imageFile);
-                if (uri != null && context != null) {
-                    intent.setData(uri);
-                    context.sendBroadcast(intent);
-                }
-            }
-        }
-    }
 
     /**
      * 刷新图库
@@ -109,34 +92,20 @@ public class PublicUtil {
             public void onMediaScannerConnected() {
 
                 if (mMediaScanner.isConnected()) {
-
-
                     if (isVideo) {
-
                         mMediaScanner.scanFile(fileAbsolutePath, "video/mp4");
-
                     } else {
-
                         mMediaScanner.scanFile(fileAbsolutePath, "image/jpeg");
-
                     }
-
                 } else {
-
-
                 }
-
             }
-
             @Override
-
             public void onScanCompleted(String path, Uri uri) {
-
-
+                refreshGrally(mContext,path);
+                mMediaScanner.disconnect();
             }
-
         });
-
         mMediaScanner.connect();
 
     }
@@ -145,14 +114,27 @@ public class PublicUtil {
     /**
      * 保存视频
      * @param context
-     * @param file
      */
-    public static void saveVideo(Context context, File file) {
-        //是否添加到相册
+
+
+
+    public static void saveVideo(Context context, String filePath) {
         ContentResolver localContentResolver = context.getContentResolver();
-        ContentValues localContentValues = getVideoContentValues(context, file, System.currentTimeMillis());
+        ContentValues localContentValues = getVideoContentValues(new File(filePath), System.currentTimeMillis());
         Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
+    }
+    public static ContentValues getVideoContentValues(File paramFile, long paramLong) {
+        ContentValues localContentValues = new ContentValues();
+        localContentValues.put(MediaStore.Video.Media.TITLE, paramFile.getName());
+        localContentValues.put(MediaStore.Video.Media.DISPLAY_NAME, paramFile.getName());
+        localContentValues.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+        localContentValues.put(MediaStore.Video.Media.DATE_TAKEN, Long.valueOf(paramLong));
+        localContentValues.put(MediaStore.Video.Media.DATE_MODIFIED, Long.valueOf(paramLong));
+        localContentValues.put(MediaStore.Video.Media.DATE_ADDED, Long.valueOf(paramLong));
+        localContentValues.put(MediaStore.Video.Media.DATA, paramFile.getAbsolutePath());
+        localContentValues.put(MediaStore.Video.Media.SIZE, Long.valueOf(paramFile.length()));
+        return localContentValues;
     }
 
     public static ContentValues getVideoContentValues(Context paramContext, File paramFile, long paramLong) {
@@ -182,5 +164,40 @@ public class PublicUtil {
 
     }
 
+    /**
+     * 刷新相册
+     * @param path
+     */
+    public static void refreshAlbumByMediaScannerConnectionMP4(Context context, String path) {
+        String[] paths = {path};
+        String[] mimeTypes = {"video/mp4"};
+        MediaScannerConnection.scanFile(context, paths, mimeTypes,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+                        refreshGrally(context,path);
+                    }
+                });
+    }
+
+
+    /**
+     * 刷新视频到相册方法一 API通用方法包括API29及以上高版本方法
+     *
+     * @param activity     当前页面
+     * @param fileNamePath 文件路径
+     */
+    public static void refreshApi29(Activity activity, String fileNamePath) {
+        //刷新相册，mineTypes为null的话让系统自己根据文件后缀判断文件类型
+        MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, null, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //代表只刷新视频格式为mp4类型其它格式视频文件不刷新
+//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"video/mp4"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //代表刷新视频文件，只要是视频都刷新根据当前Android系统支持哪些视频格式进行刷新
+//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"video/*"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //代表只刷新图片格式为jpg的文件到相册中
+//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"image/jpg"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //代表刷新图片到相册只要是图片就会刷新
+//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"image/*"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+    }
 
 }
