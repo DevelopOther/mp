@@ -447,7 +447,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
             mFloatViewGp.setVisibility(View.GONE);
         } else {
             mFloatViewGp.setVisibility(View.VISIBLE);
-            mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
+//            mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
         }
         goonWithPermissionGranted();
         platAdapter.setNewData(getAdapterData());
@@ -614,7 +614,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                     mFloatViewGp.setVisibility(View.VISIBLE);
                     //                    //屏幕竖屏
                     //                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
+//                    mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
                     Hawk.put(HawkProperty.HIDE_FLOAT_VIEWS, false);
                 }
             }
@@ -983,7 +983,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
                 break;
             case R.id.video_record_full_screen_iv:
-                mFullScreenIv.setImageResource(R.mipmap.video_record_press);
+//                mFullScreenIv.setImageResource(R.mipmap.video_record_press);
 
                 new AlertDialog.Builder(this)
                         .setCancelable(false)
@@ -992,7 +992,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
+//                                mFullScreenIv.setImageResource(R.mipmap.video_record_normal);
                             }
                         })
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -1082,7 +1082,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     private void stopRecord() {
         mMediaStream.stopRecord();
         startRecordIv.setImageResource(R.drawable.record);
-        ToastUtils.toast(mContext, "已停止录像");
+//        ToastUtils.toast(mContext, "已停止录像");
 
 
     }
