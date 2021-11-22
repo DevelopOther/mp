@@ -139,7 +139,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                 case UVC_DISCONNECT:
                     stopAllPushStream();
                     stopRecord();
-                    sendMsg("请重新插入眼镜摄像机");
+                    sendMsg("眼镜摄像头松动或已拔出，请重新插入眼镜摄像机！");
 
 
                     //                    initSurfaceViewLayout(0);
@@ -923,7 +923,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
             if (mMediaStream != null) {
                 if (mMediaStream.isRecording()) {
                     new AlertDialog.Builder(mContext)
-                            .setMessage("是否关闭录像?")
+                            .setMessage(R.string.stop_record_notice)
                             .setPositiveButton("是", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -1065,7 +1065,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                 if (mMediaStream != null) {
                     if (mMediaStream.isRecording()) {
                             new AlertDialog.Builder(mContext)
-                                    .setMessage("是否关闭录像?")
+                                    .setMessage(R.string.stop_record_notice)
                                     .setPositiveButton("是", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -1378,15 +1378,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
             }
             if (Hawk.get(HawkProperty.HIDE_FLOAT_VIEWS, false)) {
                 mFloatViewGp.setVisibility(View.GONE);
-                new AlertDialog.Builder(mContext)
-                        .setCancelable(false)
-                        .setMessage("双击屏幕可退出录屏直播！")
-                        .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
+               ToastUtils.toast(mContext,"双击屏幕可退出录屏直播！");
             } else {
                 mFloatViewGp.setVisibility(View.VISIBLE);
             }

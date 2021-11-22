@@ -73,7 +73,8 @@ public class PublicUtil {
      * @return
      */
     public static boolean isMoreThanTheAndroid10() {
-        return Build.VERSION.SDK_INT > 28;
+//        return Build.VERSION.SDK_INT > 28;
+        return false;
     }
 
 

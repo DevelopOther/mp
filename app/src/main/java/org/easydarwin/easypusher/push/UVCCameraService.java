@@ -168,7 +168,7 @@ public class UVCCameraService extends Service {
             @Override
             public void onDisconnect(final UsbDevice device, final USBMonitor.UsbControlBlock ctrlBlock) {
                 Log.v(TAG, "onDisconnect:");
-                uvcConnected = false;
+
 //                Toast.makeText(MainActivity.this, R.string.usb_camera_disconnected, Toast.LENGTH_SHORT).show();
 
 //                releaseCamera();
@@ -188,7 +188,7 @@ public class UVCCameraService extends Service {
                     mUVCCamera = null;
                     liveData.postValue(null);
                 }
-                EventBus.getDefault().post("onDisconnect");
+
 
 //                mUSBMonitor = new USBMonitor(OutterCameraService.this, this);
 //                mUSBMonitor.setDeviceFilter(DeviceFilter.getDeviceFilters(OutterCameraService.this, R.xml.device_filter));
@@ -204,6 +204,8 @@ public class UVCCameraService extends Service {
             public void onDettach(final UsbDevice device) {
                 Log.v(TAG, "onDettach:");
                 releaseCamera();
+                uvcConnected = false;
+                EventBus.getDefault().post("onDisconnect");
 //                AppContext.getInstance().bus.post(new UVCCameraDisconnect());
             }
         });

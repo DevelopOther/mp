@@ -98,7 +98,8 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
         binding.openRecordLocalBt.setOnClickListener(this);
         binding.quitAppBt.setOnClickListener(this);
         binding.recordDurationCl.setOnClickListener(this);
-        binding.recordDurationDesTv.setText(String.format("录像时间间隔为(%s分钟)",Hawk.get(HawkProperty.RECORD_DURACTION,5)));
+        binding.recordDurationDesTv.setText(String.format(getString(R.string.record_nuration),
+                Hawk.get(HawkProperty.RECORD_DURACTION,5)));
         adapter = new MyLivesAdapter(R.layout.my_lives_item);
         GridLayoutManager manager = new GridLayoutManager(mContext, 3);
         binding.livePlatformRv.setAdapter(adapter);
@@ -439,7 +440,7 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
                         if (!TextUtils.isEmpty(duration)) {
                             Hawk.put(HawkProperty.RECORD_DURACTION, Integer.parseInt(duration));
                         }
-                        binding.recordDurationDesTv.setText(String.format("录像时间间隔为(%s分钟)",duration));
+                        binding.recordDurationDesTv.setText(String.format(getString(R.string.record_nuration),duration));
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }

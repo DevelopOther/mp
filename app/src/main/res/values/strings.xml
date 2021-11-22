@@ -24,4 +24,6 @@
     <string name="xiguaurl">rtmp://push-rtmp-l6.ixigua.com/game/</string>
     <string name="yiurl">rtmp://al01.xiaoka.tv/live/</string>
     <string name="back_live_notice">\u3000\u3000勾选后台直播后，直播界面可切换至后台。在直播的同时不会影响你对其他软件的使用</string>
+    <string name="stop_record_notice">当前正在录像，确认是否要关闭吗？</string>
+    <string name="record_nuration">\u3000\u3000录像时间间隔为(%s分钟)</string>
 </resources>
