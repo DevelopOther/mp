@@ -975,6 +975,8 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                                 if (2 != which) {
                                     SPUtil.setScreenPushingCameraIndex(StreamActivity.this, which);
                                 }
+                                surfaceView.setVisibility(View.VISIBLE);
+
                                 switch (which) {
                                     case 0:
                                         initSurfaceViewLayout(0);
@@ -987,10 +989,10 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                                         mMediaStream.switchCamera(MediaStream.CAMERA_FACING_FRONT);
                                         break;
                                     case 2:
-                                        if (UVCCameraService.uvcConnected) {
-                                            mSelectCameraTv.setText("摄像头:外置");
-                                            SPUtil.setScreenPushingCameraIndex(StreamActivity.this, which);
-                                        } else {
+                                        mSelectCameraTv.setText("摄像头:外置");
+                                        SPUtil.setScreenPushingCameraIndex(StreamActivity.this, which);
+                                        if (!UVCCameraService.uvcConnected) {
+                                            surfaceView.setVisibility(View.GONE);
                                             ToastUtils.toast(mContext, "暂无外置摄像头");
                                         }
                                         break;
@@ -1320,6 +1322,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
     @Override
     public void onUvcCameraConnected() {
+        surfaceView.setVisibility(View.VISIBLE);
         Log.e(TAG, "onUvcCameraConnected  otg摄像头连接");
         sendMsg("眼镜摄像机已连接");
         stopAllPushStream();
@@ -1363,6 +1366,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
     public void onUvcCameraDisConnected() {
         //        Toast.makeText(getApplicationContext(),"disconnect",Toast.LENGTH_SHORT).show();
         handler.sendEmptyMessage(UVC_DISCONNECT);
+        surfaceView.setVisibility(View.GONE);
 
     }
 

@@ -117,12 +117,12 @@
             android:id="@+id/video_record_full_screen_iv"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_margin="5dp"
-            android:padding="5dp"
             android:scaleType="fitCenter"
+            app:layout_constraintLeft_toLeftOf="@+id/live_plates_rv"
+            app:layout_constraintRight_toRightOf="@+id/live_plates_rv"
             android:src="@mipmap/douyin_icon"
             app:layout_constraintBottom_toTopOf="@+id/live_plates_rv"
-            app:layout_constraintRight_toRightOf="parent" />
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/live_plates_rv"
