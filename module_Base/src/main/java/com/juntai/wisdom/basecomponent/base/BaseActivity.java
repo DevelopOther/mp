@@ -92,7 +92,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements Toolba
         mBackTv = findViewById(R.id.back_tv);
         titleName = findViewById(R.id.title_name);
         titleRightTv = findViewById(R.id.title_rightTv);
-        initToolbarAndStatusBar();
+        initToolbarAndStatusBar(true);
         initLeftBackTv(true);
         initView();
         initData();
@@ -101,15 +101,23 @@ public abstract class BaseActivity extends RxAppCompatActivity implements Toolba
     /**
      * 警小宝 东关派出所版本 初始化toolbar和状态栏
      */
-    protected void initToolbarAndStatusBar() {
-        getToolbar().setVisibility(View.VISIBLE);
-        getToolbar().setNavigationIcon(null);
-        getToolbar().setBackgroundResource(R.drawable.bg_white_only_bottom_gray_shape_1px);
-        //状态栏配置
-        mBaseRootCol.setFitsSystemWindows(true);
-        mImmersionBar.statusBarColor(R.color.white)
-                .statusBarDarkFont(true)
-                .init();
+    protected void initToolbarAndStatusBar(boolean visible) {
+        if (visible) {
+            getToolbar().setVisibility(View.VISIBLE);
+            getToolbar().setNavigationIcon(null);
+            getToolbar().setBackgroundResource(R.drawable.bg_white_only_bottom_gray_shape_1px);
+            //状态栏配置
+            mBaseRootCol.setFitsSystemWindows(true);
+            mImmersionBar.statusBarColor(R.color.white)
+                    .statusBarDarkFont(true)
+                    .init();
+        }else{
+            getToolbar().setVisibility(View.GONE);
+            //状态栏配置
+            mBaseRootCol.setFitsSystemWindows(false);
+            mImmersionBar.reset().transparentStatusBar().init();
+        }
+
     }
 
     /**

@@ -4,6 +4,8 @@ import com.basenetlib.RequestStatus;
 import com.basenetlib.networkProxy.HttpProxy;
 import com.basenetlib.okgo.NetResponseCallBack;
 import com.basenetlib.util.GsonManager;
+import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
+import com.juntai.wisdom.basecomponent.mvp.IModel;
 import com.regmode.Utils.RegOperateManager;
 import com.regmode.bean.AppInfoBean;
 import com.regmode.bean.RegCodeBean;
@@ -13,7 +15,7 @@ import com.regmode.bean.RegCodeBean;
  * Time:2019/12/24 20:10
  * Description:This is RegLatestPresent
  */
-public class RegLatestPresent implements RegLatestContact.IRegLatestPresent {
+public class RegLatestPresent extends BasePresenter<IModel,RegLatestContact.IRegView> implements RegLatestContact.IRegLatestPresent {
 
 
     @Override
@@ -155,4 +157,8 @@ public class RegLatestPresent implements RegLatestContact.IRegLatestPresent {
                 });
     }
 
+    @Override
+    protected IModel createModel() {
+        return null;
+    }
 }

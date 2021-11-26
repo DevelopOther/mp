@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -51,7 +52,7 @@ import java.util.List;
 /**
  * 设置页
  */
-public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMenuItemClickListener,
+public class SettingActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener,
         View.OnClickListener {
 
     public static final int REQUEST_OVERLAY_PERMISSION = 1004;  // 悬浮框
@@ -70,20 +71,6 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
     private AlertDialog alertDialog;
     ;
 
-    @Override
-    public void onUvcCameraConnected() {
-
-    }
-
-    @Override
-    public void onUvcCameraAttached() {
-
-    }
-
-    @Override
-    public void onUvcCameraDisConnected() {
-
-    }
 
     //    EditText url;
     @Override
@@ -99,9 +86,9 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
         binding.quitAppBt.setOnClickListener(this);
         binding.recordDurationCl.setOnClickListener(this);
         binding.recordDurationDesTv.setText(String.format(getString(R.string.record_nuration),
-                Hawk.get(HawkProperty.RECORD_DURACTION,5)));
+                String.valueOf(Hawk.get(HawkProperty.RECORD_DURACTION, 5))));
         adapter = new MyLivesAdapter(R.layout.my_lives_item);
-        GridLayoutManager manager = new GridLayoutManager(mContext, 3);
+        GridLayoutManager manager = new GridLayoutManager(this, 3);
         binding.livePlatformRv.setAdapter(adapter);
         binding.livePlatformRv.setLayoutManager(manager);
 
@@ -110,11 +97,11 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 LiveBean liveBean = (LiveBean) adapter.getData().get(position);
                 if (liveBean.isPushing()) {
-                    ToastUtils.toast(mContext, "正在推流,请先停止推流后再重试");
+                    ToastUtils.toast(SettingActivity.this, "正在推流,请先停止推流后再重试");
                     return;
                 }
                 int selectedSize = getSelectedAmount(adapter);
-                startActivity(new Intent(mContext, EditLivePlatActivity.class).putExtra(EditLivePlatActivity.PLATE,
+                startActivity(new Intent(SettingActivity.this, EditLivePlatActivity.class).putExtra(EditLivePlatActivity.PLATE,
                         liveBean)
                         .putExtra(EditLivePlatActivity.PLATE_LIVE_SIZE, selectedSize));
 
@@ -401,7 +388,7 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
             case R.id.open_record_local_bt:
                 Intent intent = new Intent(this, MediaFilesActivity.class);
                 startActivityForResult(intent, 0);
-//                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                //                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
                 break;
             case R.id.quit_app_bt:
                 View view = LayoutInflater.from(this).inflate(R.layout.quite_app, null);
@@ -430,9 +417,9 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
                 break;
 
             case R.id.record_duration_cl:
-                View durationView = LayoutInflater.from(mContext).inflate(R.layout.record_duration, null);
+                View durationView = LayoutInflater.from(SettingActivity.this).inflate(R.layout.record_duration, null);
                 EditText durationEt = durationView.findViewById(R.id.duration_et);
-                AlertDialog dialog = new AlertDialog.Builder(mContext).setView(durationView).show();
+                AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this).setView(durationView).show();
                 durationView.findViewById(R.id.confirm_tv).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -440,7 +427,8 @@ public class SettingActivity extends BaseProjectActivity implements Toolbar.OnMe
                         if (!TextUtils.isEmpty(duration)) {
                             Hawk.put(HawkProperty.RECORD_DURACTION, Integer.parseInt(duration));
                         }
-                        binding.recordDurationDesTv.setText(String.format(getString(R.string.record_nuration),duration));
+                        binding.recordDurationDesTv.setText(String.format(getString(R.string.record_nuration),
+                                duration));
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }

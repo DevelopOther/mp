@@ -22,6 +22,7 @@ import com.serenegiant.usb.UVCCamera;
 
 import org.easydarwin.easypusher.R;
 import org.easydarwin.easypusher.util.Config;
+import org.easydarwin.easypusher.util.PublicUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.nio.ByteBuffer;
@@ -198,6 +199,11 @@ public class UVCCameraService extends Service {
             @Override
             public void onCancel(UsbDevice usbDevice) {
                 releaseCamera();
+            }
+
+            @Override
+            public void onPremissionConfirm() {
+                EventBus.getDefault().post("onPremissionConfirm");
             }
 
             @Override

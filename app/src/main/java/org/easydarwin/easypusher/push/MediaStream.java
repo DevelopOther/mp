@@ -683,8 +683,9 @@ public class MediaStream {
 
     /// 更新分辨率
     public void updateResolution() {
-        if (mCamera == null && uvcCamera == null)
+        if (mCamera == null && uvcCamera == null) {
             return;
+        }
 
         stopPreview();
         destroyCamera();
@@ -725,11 +726,6 @@ public class MediaStream {
                 return;
             Log.e(TAG, "switchCameraTask  start  摄像头id "+mCameraId);
             try {
-//                if (mCameraId == CAMERA_FACING_BACK_UVC) {
-//                    if (uvcCamera != null) {
-//                        return;
-//                    }
-//                }
 
                 stopPreview();
                 destroyCamera();

@@ -43,29 +43,17 @@ import org.easydarwin.easypusher.util.PublicUtil;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * 录像 / 抓拍
  */
-public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.OnMenuItemClickListener {
+public class MediaFilesActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
 
     private ActivityMediaFilesBinding mDataBinding;
 
-    @Override
-    public void onUvcCameraConnected() {
-
-    }
-
-    @Override
-    public void onUvcCameraAttached() {
-
-    }
-
-    @Override
-    public void onUvcCameraDisConnected() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +72,7 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
                 return 1;
             }
 
+            @Override
             public Fragment getItem(int position) {
                 Bundle args = new Bundle();
                 args.putBoolean(LocalFileFragment.KEY_IS_RECORD, position == 0);
@@ -130,7 +119,7 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
 
         private String mSuffix;
         File mRoot = null;
-        File[] mSubFiles;
+        List<File> mSubFiles = new ArrayList<>();
         int mImgHeight;
 
         @Override
@@ -153,10 +142,15 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
                 }
             });
 
-            if (subFiles == null)
+            if (subFiles == null) {
                 subFiles = new File[0];
-
-            mSubFiles = subFiles;
+            }else {
+                for (File subFile : subFiles) {
+                    if (subFile.length()>0) {
+                        mSubFiles.add(subFile);
+                    }
+                }
+            }
             mImgHeight = (int) (getResources().getDisplayMetrics().density * 100 + 0.5f);
         }
 
@@ -198,7 +192,7 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
                                     .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            final String path = mSubFiles[holder.getAdapterPosition()].getPath();
+                                            final String path = mSubFiles.get(holder.getAdapterPosition()).getPath();
                                             if (path.endsWith(".mp4")) {
                                                 File f = new File(path);
                                                 if (f.delete()) {
@@ -208,10 +202,16 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
                                                             return filename.endsWith(mSuffix);
                                                         }
                                                     });
-                                                    if (subFiles == null)
+                                                    mSubFiles.clear();
+                                                    if (subFiles == null) {
                                                         subFiles = new File[0];
-
-                                                    mSubFiles = subFiles;
+                                                    }else {
+                                                        for (File subFile : subFiles) {
+                                                            if (subFile.length()>0) {
+                                                                mSubFiles.add(subFile);
+                                                            }
+                                                        }
+                                                    }
                                                     notifyDataSetChanged();
                                                     PublicUtil.refreshAlbum(getContext(),Config.recordPath(),true);
                                                     ToastUtils.toast(getContext(), "已删除");
@@ -237,13 +237,13 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
                     }
 
                     Glide.with(getContext())
-                            .load(mSubFiles[position])
+                            .load(mSubFiles.get(position))
                             .into(holder.mImage);
                 }
 
                 @Override
                 public int getItemCount() {
-                    return mSubFiles.length;
+                    return mSubFiles.size();
                 }
             });
         }
@@ -266,7 +266,7 @@ public class MediaFilesActivity extends BaseProjectActivity implements Toolbar.O
                 return;
             }
 
-            final String path = mSubFiles[holder.getAdapterPosition()].getPath();
+            final String path = mSubFiles.get(holder.getAdapterPosition()).getPath();
 
             if (TextUtils.isEmpty(path)) {
                 Toast.makeText(getContext(), "文件不存在", Toast.LENGTH_SHORT).show();

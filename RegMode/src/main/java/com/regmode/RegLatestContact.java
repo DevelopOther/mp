@@ -1,6 +1,7 @@
 package com.regmode;
 
 import com.basenetlib.RequestStatus;
+import com.juntai.wisdom.basecomponent.mvp.IView;
 
 /**
  * Author:wang_sir
@@ -9,6 +10,10 @@ import com.basenetlib.RequestStatus;
  */
 public interface RegLatestContact {
 
+
+    interface  IRegView extends IView{
+
+    }
     String  SET_CODE = "set_code";
     String  SET_IMEI= "set_imei";
     String GET_REG_INFO = "get_reg_info";

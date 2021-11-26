@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
 import com.juntai.wisdom.basecomponent.utils.ToastUtils;
 import com.orhanobut.hawk.Hawk;
 import com.squareup.otto.Subscribe;
@@ -280,36 +281,25 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        // 全屏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initView();
-        initSurfaceViewLayout(0);
-        BUSUtil.BUS.register(this);
-        //        RegOperateManager.getInstance(this).setCancelCallBack(new RegLatestContact.CancelCallBack() {
-        //            @Override
-        //            public void toFinishActivity() {
-        //                finish();
-        //            }
-        //
-        //            @Override
-        //            public void toDoNext() {
-        //
-        //            }
-        //        });
-
-
+    protected BasePresenter createPresenter() {
+        return null;
     }
 
+
+
+    @Override
+    public int getLayoutView() {
+        return R.layout.activity_main;
+    }
 
     /**
      * 初始化view
      */
-    private void initView() {
-
+    @Override
+    public void initView() {
+        initToolbarAndStatusBar(false);
+        // 全屏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //        spnResolution = findViewById(R.id.spn_resolution);
         streamStat = findViewById(R.id.stream_stat);
         txtStatus = findViewById(R.id.txt_stream_status);
@@ -377,6 +367,17 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                 Hawk.put(HawkProperty.PLATFORMS, arrays);
             }
         });
+
+
+
+        initSurfaceViewLayout(0);
+        BUSUtil.BUS.register(this);
+
+    }
+
+    @Override
+    public void initData() {
+
     }
 
     /**
@@ -1274,9 +1275,9 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
                             Hawk.put(HawkProperty.KEY_SCREEN_PUSHING_UVC_RES_INDEX, position);
                             Hawk.put(HawkProperty.KEY_UVC_WIDTH, Integer.parseInt(titles[0]));
                             Hawk.put(HawkProperty.KEY_UVC_HEIGHT, Integer.parseInt(titles[1]));
-                            if (mMediaStream != null) {
-                                mMediaStream.updateResolution();
-                            }
+//                            if (mMediaStream != null) {
+//                                mMediaStream.updateResolution();
+//                            }
                             mUvcService.reRequestOtg();
                         }
                         mScreenResTv.setText("分辨率:" + title);
@@ -1400,5 +1401,10 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
             }
         }
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onSuccess(String tag, Object o) {
+
     }
 }

@@ -17,6 +17,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.juntai.wisdom.basecomponent.app.BaseApplication;
 import com.king.zxing.CaptureHelper;
 import com.king.zxing.OnCaptureCallback;
 import com.king.zxing.ViewfinderView;
@@ -30,7 +31,7 @@ import java.util.function.Consumer;
 
 
 
-public class QRScanActivity extends BaseProjectActivity implements View.OnClickListener, OnCaptureCallback {
+public class QRScanActivity extends AppCompatActivity implements View.OnClickListener, OnCaptureCallback {
     private SurfaceView mSurfaceView;
     private ViewfinderView mViewfinderView;
     private ImageView mZxingPic;
@@ -60,20 +61,6 @@ public class QRScanActivity extends BaseProjectActivity implements View.OnClickL
     }
 
 
-    @Override
-    public void onUvcCameraConnected() {
-
-    }
-
-    @Override
-    public void onUvcCameraAttached() {
-
-    }
-
-    @Override
-    public void onUvcCameraDisConnected() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

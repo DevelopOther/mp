@@ -41,6 +41,7 @@ import com.mobile.auth.gatewayauth.model.TokenRet;
 import com.orhanobut.hawk.Hawk;
 import com.regmode.RegLatestContact;
 import com.regmode.RegLatestPresent;
+import com.regmode.Utils.RegOperateManager;
 import com.regmode.bean.AppInfoBean;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -68,8 +69,8 @@ import io.reactivex.functions.Consumer;
 /**
  * 启动页
  */
-public class LoginActivity extends BaseProjectActivity implements RequestStatus, View.OnClickListener {
-    private RegLatestPresent present;
+public class LoginActivity extends BaseProjectActivity<RegLatestPresent> implements RequestStatus,
+        View.OnClickListener, RegLatestContact.IRegView {
     /**
      * 登录
      */
@@ -79,7 +80,14 @@ public class LoginActivity extends BaseProjectActivity implements RequestStatus,
     private TokenResultListener mTokenResultListener;
     private ProgressDialog mProgressDialog;
     private BaseUIConfig mUIConfig;
-
+    String[] permissions = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
     @Override
     public void onUvcCameraConnected() {
         //        Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
@@ -96,62 +104,14 @@ public class LoginActivity extends BaseProjectActivity implements RequestStatus,
     }
 
     @Override
+    protected RegLatestPresent createPresenter() {
+        return new RegLatestPresent();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ImmersionBar mImmersionBar = ImmersionBar.with(this);
-        mImmersionBar.statusBarColor(R.color.gray_light).statusBarDarkFont(true).init();
-        Hawk.put(HawkProperty.HIDE_FLOAT_VIEWS, false);
-        initPlatform();
-        present = new RegLatestPresent();
-        String[] permissions = new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION
-        };
-        SPUtil.setBitrateKbps(this, SPUtil.BITRATEKBPS);
-        setContentView(R.layout.login_activity);
-        initView();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
-        if (!NetWorkUtil.isNetworkAvailable()) {
-            new AlertDialog.Builder(mContext)
-                    .setCancelable(false)
-                    .setMessage("网络连接异常，请检查手机网络或系统时间！")
-                    .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityManagerTool.getInstance().finishApp();
-                        }
-                    }).show();
-            return;
-        }
-        new RxPermissions(this)
-                .request(permissions)
-                .delay(1, TimeUnit.SECONDS)
-                .compose(this.bindUntilEvent(ActivityEvent.DESTROY))
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
 
-                            //获取软件的key
-                            present.getAppVersionInfoAndKeyFromService(RegLatestContact.GET_KEY, LoginActivity.this);
-
-                        } else {
-                            //有一个权限没通过
-                            finish();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                    }
-                });
-
-
-        aliAuth();
 
 
     }
@@ -233,11 +193,64 @@ public class LoginActivity extends BaseProjectActivity implements RequestStatus,
     }
 
 
-    private void initView() {
+    @Override
+    public int getLayoutView() {
+        return R.layout.login_activity;
+    }
+
+    @Override
+    public void initView() {
         mLogin = (TextView) findViewById(R.id.login);
         mLogin.setOnClickListener(this);
         mLoginByMobileLl = (LinearLayout) findViewById(R.id.login_by_mobile_ll);
         mLoginByMobileLl.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void initData() {
+        initToolbarAndStatusBar(false);
+        Hawk.put(HawkProperty.HIDE_FLOAT_VIEWS, false);
+        initPlatform();
+        SPUtil.setBitrateKbps(this, SPUtil.BITRATEKBPS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //隐藏状态栏
+        if (!NetWorkUtil.isNetworkAvailable()) {
+            new AlertDialog.Builder(mContext)
+                    .setCancelable(false)
+                    .setMessage("网络连接异常，请检查手机网络或系统时间！")
+                    .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityManagerTool.getInstance().finishApp();
+                        }
+                    }).show();
+            return;
+        }
+        new RxPermissions(this)
+                .request(permissions)
+                .delay(1, TimeUnit.SECONDS)
+                .compose(this.bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+
+                            //获取软件的key
+                            mPresenter.getAppVersionInfoAndKeyFromService(RegLatestContact.GET_KEY, LoginActivity.this);
+
+                        } else {
+                            //有一个权限没通过
+                            finish();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                    }
+                });
+
+
+        aliAuth();
     }
 
     UMAuthListener authListener = new UMAuthListener() {
@@ -474,5 +487,8 @@ public class LoginActivity extends BaseProjectActivity implements RequestStatus,
     }
 
 
+    @Override
+    public void onSuccess(String tag, Object o) {
 
+    }
 }

@@ -1,6 +1,7 @@
 package org.easydarwin.easypusher.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import java.io.File;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,18 +75,19 @@ public class PublicUtil {
      * @return
      */
     public static boolean isMoreThanTheAndroid10() {
-//        return Build.VERSION.SDK_INT > 28;
+        //        return Build.VERSION.SDK_INT > 28;
         return false;
     }
 
 
     /**
      * 刷新图库
+     *
      * @param mContext
      * @param fileAbsolutePath
      * @param isVideo
      */
-    public static void refreshAlbum(Context mContext,String fileAbsolutePath, boolean isVideo) {
+    public static void refreshAlbum(Context mContext, String fileAbsolutePath, boolean isVideo) {
 
         mMediaScanner = new MediaScannerConnection(mContext, new MediaScannerConnection.MediaScannerConnectionClient() {
 
@@ -101,9 +104,10 @@ public class PublicUtil {
                 } else {
                 }
             }
+
             @Override
             public void onScanCompleted(String path, Uri uri) {
-                refreshGrally(mContext,path);
+                refreshGrally(mContext, path);
                 mMediaScanner.disconnect();
             }
         });
@@ -114,9 +118,9 @@ public class PublicUtil {
 
     /**
      * 保存视频
+     *
      * @param context
      */
-
 
 
     public static void saveVideo(Context context, String filePath) {
@@ -125,6 +129,7 @@ public class PublicUtil {
         Uri localUri = localContentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, localContentValues);
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, localUri));
     }
+
     public static ContentValues getVideoContentValues(File paramFile, long paramLong) {
         ContentValues localContentValues = new ContentValues();
         localContentValues.put(MediaStore.Video.Media.TITLE, paramFile.getName());
@@ -151,7 +156,7 @@ public class PublicUtil {
         return localContentValues;
     }
 
-    public static void refreshGrally(Context mContext,String filePath){
+    public static void refreshGrally(Context mContext, String filePath) {
         Uri uri = null;
         if (Build.VERSION.SDK_INT >= 24) {//7.0 Android N
             //com.xxx.xxx.fileprovider为上述manifest中provider所配置相同
@@ -160,13 +165,14 @@ public class PublicUtil {
         } else {//7.0以下
             uri = Uri.fromFile(new File(filePath));
         }
-        Intent localIntent =new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri);
+        Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
         mContext.sendBroadcast(localIntent);
 
     }
 
     /**
      * 刷新相册
+     *
      * @param path
      */
     public static void refreshAlbumByMediaScannerConnectionMP4(Context context, String path) {
@@ -176,7 +182,7 @@ public class PublicUtil {
                 new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
-                        refreshGrally(context,path);
+                        refreshGrally(context, path);
                     }
                 });
     }
@@ -190,15 +196,67 @@ public class PublicUtil {
      */
     public static void refreshApi29(Activity activity, String fileNamePath) {
         //刷新相册，mineTypes为null的话让系统自己根据文件后缀判断文件类型
-        MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, null, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, null, (path, uri) -> Log.e("资源刷新成功路径为",
+                path));
         //代表只刷新视频格式为mp4类型其它格式视频文件不刷新
-//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"video/mp4"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new
+        //                String[]{"video/mp4"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
         //代表刷新视频文件，只要是视频都刷新根据当前Android系统支持哪些视频格式进行刷新
-//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"video/*"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new
+        //                String[]{"video/*"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
         //代表只刷新图片格式为jpg的文件到相册中
-//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"image/jpg"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new
+        //                String[]{"image/jpg"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
         //代表刷新图片到相册只要是图片就会刷新
-//                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new String[]{"image/*"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
+        //                MediaScannerConnection.scanFile(activity, new String[]{fileNamePath}, new
+        //                String[]{"image/*"}, (path, uri) -> Log.e("资源刷新成功路径为", path));
     }
+
+
+    /**
+     * 判断程序是否在后台运行
+     *
+     * @param activity
+     * @return true 表示在后台运行
+     */
+
+    public static boolean isRunBackground(Activity activity) {
+
+        ActivityManager activityManager = (ActivityManager) activity.getApplicationContext()
+
+                .getSystemService(Context.ACTIVITY_SERVICE);
+
+        String packageName = activity.getApplicationContext().getPackageName();
+
+        //获取Android设备中所有正在运行的App
+
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager
+
+                .getRunningAppProcesses();
+
+        if (appProcesses == null)
+
+            return true;
+
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+
+            // The name of the process that this object is associated with.
+
+            if (appProcess.processName.equals(packageName)
+
+                    && appProcess.importance ==
+
+                    ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+
+    }
+
 
 }

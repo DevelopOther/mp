@@ -120,6 +120,11 @@ public final class USBMonitor {
 		 * @param device
 		 */
 		public void onCancel(UsbDevice device);
+
+		/**
+		 * 确定权限后
+		 */
+		void  onPremissionConfirm();
 	}
 
 	public USBMonitor(final Context context, final OnDeviceConnectListener listener) {
@@ -534,12 +539,21 @@ public final class USBMonitor {
 
 	/**
 	 * BroadcastReceiver for USB permission
+	 * usb权限的广播接听
 	 */
 	private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
 			if (destroyed) return;
+			if (mOnDeviceConnectListener != null) {
+				mAsyncHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						mOnDeviceConnectListener.onPremissionConfirm();
+					}
+				});
+			}
 			final String action = intent.getAction();
 			if (ACTION_USB_PERMISSION.equals(action)) {
 				// when received the result of requesting USB permission

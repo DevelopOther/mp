@@ -1,15 +1,23 @@
 package org.easydarwin.easypusher;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.versionedparcelable.ParcelUtils;
+
+import com.juntai.wisdom.basecomponent.base.BaseActivity;
+import com.juntai.wisdom.basecomponent.base.BaseMvpActivity;
+import com.juntai.wisdom.basecomponent.mvp.BasePresenter;
 import com.juntai.wisdom.basecomponent.utils.ActivityManagerTool;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
+import org.easydarwin.easypusher.push.StreamActivity;
+import org.easydarwin.easypusher.util.PublicUtil;
 import org.easydarwin.easypusher.util.SPUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,7 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
  * @UpdateUser: 更新者
  * @UpdateDate: 2020/5/5 20:47
  */
-public abstract class BaseProjectActivity extends RxAppCompatActivity {
+public abstract class BaseProjectActivity<P extends BasePresenter> extends BaseMvpActivity<P> {
 
     protected boolean isPushingStream = false;//是否正在推流
     protected boolean isPushingFirstStream = false;//是否正在推流
@@ -73,6 +81,12 @@ public abstract class BaseProjectActivity extends RxAppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"disconnect",Toast.LENGTH_SHORT).show();
 
                 onUvcCameraDisConnected();
+                break;
+            case "onPremissionConfirm":
+                if (PublicUtil.isRunBackground(this)) {
+                    startActivity(new Intent(this, StreamActivity.class));
+                }
+
                 break;
             default:
                 break;

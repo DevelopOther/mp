@@ -10,22 +10,8 @@ import com.orhanobut.hawk.Hawk;
 
 import org.easydarwin.easypusher.push.StreamActivity;
 
-public class SplashActivity extends BaseProjectActivity {
+public class SplashActivity extends AppCompatActivity {
 
-    @Override
-    public void onUvcCameraConnected() {
-
-    }
-
-    @Override
-    public void onUvcCameraAttached() {
-
-    }
-
-    @Override
-    public void onUvcCameraDisConnected() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +22,13 @@ public class SplashActivity extends BaseProjectActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(mContext, StreamActivity.class));
+                    startActivity(new Intent(SplashActivity.this, StreamActivity.class));
                     finish();
                 }
             },1000);
 
         }else {
-            startActivity(new Intent(mContext, LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 
