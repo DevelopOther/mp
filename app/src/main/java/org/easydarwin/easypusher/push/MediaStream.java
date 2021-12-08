@@ -1,5 +1,6 @@
 package org.easydarwin.easypusher.push;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.ImageFormat;
@@ -29,6 +30,7 @@ import org.easydarwin.easypusher.mine.SettingActivity;
 import org.easydarwin.easypusher.util.Config;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.easydarwin.easypusher.util.PublicUtil;
 import org.easydarwin.easypusher.util.SPUtil;
@@ -117,9 +119,11 @@ public class MediaStream {
     /**
      * 初始化MediaStream
      */
-    public MediaStream(Context context, SurfaceTexture texture, boolean enableVideo) {
+    public MediaStream(Context context, SurfaceTexture texture, boolean enableVideo,boolean hasAudioPremission) {
         this.context = context;
-        audioStream = AudioStream.getInstance(context);
+        if (hasAudioPremission) {
+            audioStream = AudioStream.getInstance(context);
+        }
         mSurfaceHolderRef = new WeakReference(texture);
 
         mCameraThread = new HandlerThread("CAMERA") {
@@ -277,14 +281,17 @@ public class MediaStream {
             startCameraPreview();
             initConsumer(frameWidth, frameHeight);
         }
-        audioStream.setEnableAudio(SPUtil.getEnableAudio(context));
-        audioStream.addPusher(mZeroEasyPusher);
-        audioStream.addPusher(mFirstEasyPusher);
-        if (PublicUtil.isMoreThanTheAndroid10()) {
-            audioStream.addPusher(mSecendEasyPusher);
-            audioStream.addPusher(mThirdEasyPusher);
-            audioStream.addPusher(mFourthEasyPusher);
+        if (audioStream != null) {
+            audioStream.setEnableAudio(SPUtil.getEnableAudio(context));
+            audioStream.addPusher(mZeroEasyPusher);
+            audioStream.addPusher(mFirstEasyPusher);
+            if (PublicUtil.isMoreThanTheAndroid10()) {
+                audioStream.addPusher(mSecendEasyPusher);
+                audioStream.addPusher(mThirdEasyPusher);
+                audioStream.addPusher(mFourthEasyPusher);
+            }
         }
+
 
     }
 

@@ -10,6 +10,8 @@ import android.media.MediaRecorder;
 import android.os.Process;
 import android.util.Log;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
 import org.easydarwin.muxer.EasyMuxer;
 import org.easydarwin.push.Pusher;
 
@@ -253,7 +255,6 @@ public class AudioStream {
                             e.printStackTrace();
                         }
                     }
-
                     // 4、停止采集，释放资源。
                     if (mAudioRecord != null) {
                         mAudioRecord.stop();

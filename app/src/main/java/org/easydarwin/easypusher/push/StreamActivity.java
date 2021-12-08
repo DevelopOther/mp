@@ -59,6 +59,7 @@ import org.easydarwin.easypusher.record.RecordService;
 import org.easydarwin.easypusher.util.Config;
 
 import com.juntai.wisdom.basecomponent.utils.HawkProperty;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.easydarwin.easypusher.util.DoubleClickListener;
 import org.easydarwin.easypusher.util.PublicUtil;
@@ -400,11 +401,6 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
     @Override
     protected void onPause() {
-        //        if (mMediaStream != null) {
-        //            if (isStreaming() && SPUtil.getEnableBackgroundCamera(this)) {
-        //                mService.activePreview();
-        //            }
-        //        }
 
         super.onPause();
     }
@@ -695,7 +691,7 @@ public class StreamActivity extends BaseProjectActivity implements View.OnClickL
 
             boolean enableVideo = SPUtil.getEnableVideo(this);
 
-            ms = new MediaStream(getApplicationContext(), surface, enableVideo);
+            ms = new MediaStream(getApplicationContext(), surface, enableVideo,new RxPermissions(this).isGranted(Manifest.permission.RECORD_AUDIO));
             ms.setRecordPath(easyPusher.getPath());
             mMediaStream = ms;
             startCamera();

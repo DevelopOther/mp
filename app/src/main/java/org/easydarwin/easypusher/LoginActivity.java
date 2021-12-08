@@ -84,9 +84,7 @@ public class LoginActivity extends BaseProjectActivity<RegLatestPresent> impleme
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_FINE_LOCATION
     };
     @Override
     public void onUvcCameraConnected() {
@@ -173,13 +171,6 @@ public class LoginActivity extends BaseProjectActivity<RegLatestPresent> impleme
                 String key = dataBean.getSoftDescription();
                 if (key != null) {
                     Hawk.put(HawkProperty.APP_KEY, key);
-                    //                    boolean isAgree = Hawk.get(HawkProperty.AGREE_PROTOCAL, false);
-                    //                    if (!isAgree) {
-                    //                        showAgreementAlter();
-                    //                    } else {
-                    //                        startActivity(new Intent(LoginActivity.this, StreamActivity.class));
-                    //                        finish();
-                    //                    }
                 } else {
                     ToastUtils.toast(this, "参数初始化失败");
                 }
@@ -204,6 +195,8 @@ public class LoginActivity extends BaseProjectActivity<RegLatestPresent> impleme
         mLogin.setOnClickListener(this);
         mLoginByMobileLl = (LinearLayout) findViewById(R.id.login_by_mobile_ll);
         mLoginByMobileLl.setOnClickListener(this);
+        //获取软件的key
+        mPresenter.getAppVersionInfoAndKeyFromService(RegLatestContact.GET_KEY, LoginActivity.this);
     }
 
 
@@ -233,15 +226,11 @@ public class LoginActivity extends BaseProjectActivity<RegLatestPresent> impleme
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
-
-                            //获取软件的key
-                            mPresenter.getAppVersionInfoAndKeyFromService(RegLatestContact.GET_KEY, LoginActivity.this);
-
-                        } else {
-                            //有一个权限没通过
-                            finish();
-                        }
+//                        if (aBoolean) {
+//                           //全部同意
+//                        } else {
+//                            //有一个权限没通过
+//                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
