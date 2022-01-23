@@ -18,19 +18,19 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
         boolean isLogin = Hawk.get(HawkProperty.LOGIN_SUCCESS, false);
-        if (isLogin) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isLogin) {
                     startActivity(new Intent(SplashActivity.this, StreamActivity.class));
                     finish();
+                }else {
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    finish();
                 }
-            },1000);
+            }
+        },4000);
 
-        }else {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        }
 
 
     }
